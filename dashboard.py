@@ -31,15 +31,23 @@ df_hoje = df[df["data_atualizacao"].dt.date == hoje]
 
 # 🔹 Criar tabela dinâmica (Pivot Table)
 if not df_hoje.empty:
+    # Criar uma cópia da coluna data_atualizacao para usar apenas o horário
+    df_hoje["horario"] = df_hoje["data_atualizacao"].dt.strftime("%H:%M")
+    
+    # Usar o horário nas colunas em vez da data_atualizacao completa
     df_pivot = df_hoje.pivot_table(index=["tipo", "vencimento"], 
-                                   columns="data_atualizacao", 
+                                   columns="horario", 
                                    values="taxa", 
                                    aggfunc="mean")  # Usa a média caso tenha múltiplos valores
+    
+    # Formatação da data para o título
+    data_formatada = hoje.strftime("%d/%m/%Y")
 else:
     df_pivot = pd.DataFrame()  # Garante que a tabela fica vazia caso não haja dados
+    data_formatada = hoje.strftime("%d/%m/%Y")
 
-# 🔹 Exibir a Pivot Table no Dashboard
-st.subheader("📊 Tesouro Direto - Taxas do Dia")
+# 🔹 Exibir a Pivot Table no Dashboard com a data no título
+st.subheader(f"📊 Tesouro Direto - Taxas do Dia {data_formatada}")
 if not df_pivot.empty:
     st.dataframe(df_pivot.style.format("{:.2f}"), use_container_width=True)  # Exibir com duas casas decimais
 else:
