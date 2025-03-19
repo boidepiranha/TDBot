@@ -41,6 +41,6 @@ else:
 # 🔹 Exibir a Pivot Table no Dashboard
 st.subheader("📊 Tesouro Direto - Taxas do Dia")
 if not df_pivot.empty:
-    st.dataframe(df_pivot.style.format("{:.2f}"))  # Exibir com duas casas decimais
+    st.dataframe(df_pivot.style.format("{:.2f}"), use_container_width=True)  # Exibir com duas casas decimais
 else:
     st.warning("⚠️ Nenhuma atualização disponível para hoje.")
