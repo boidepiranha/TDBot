@@ -3,10 +3,12 @@ import pandas as pd
 import plotly.express as px
 from supabase import create_client, Client
 from datetime import datetime
+import os
 
 # 🔹 CONFIGURAÇÕES DO SUPABASE
-SUPABASE_URL = "https://ifjxlelguuujvabcgnjm.supabase.co"  # Cole a URL do Supabase
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmanhsZWxndXV1anZhYmNnbmptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzOTM2MjAsImV4cCI6MjA1Nzk2OTYyMH0.wv0alf5lXG4Fo4oeycGFibl_9b4wGb9on6FT_Zgl0V8"  # Cole a chave API (anon key)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
 
 # 🔹 Conectar ao Supabase
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
