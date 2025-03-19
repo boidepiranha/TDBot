@@ -39,7 +39,7 @@ else:
     df_pivot = pd.DataFrame()  # Garante que a tabela fica vazia caso não haja dados
 
 # 🔹 Exibir a Pivot Table no Dashboard
-st.subheader("📊 Tabela Dinâmica - Taxas do Dia Corrente")
+st.subheader("📊 Tesouro Direto - Taxas do Dia Corrente")
 if not df_pivot.empty:
     st.dataframe(df_pivot.style.format("{:.2f}"))  # Exibir com duas casas decimais
 else:
