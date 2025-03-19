@@ -20,7 +20,12 @@ Um bot para Telegram com dashboard para monitoramento e controle.
    ```
    pip install -r requirements.txt
    ```
-3. Configure as variáveis de ambiente necessárias
+3. Configure as variáveis de ambiente:
+   - Copie o arquivo `bot_telegram.env.example` para `bot_telegram.env`
+   - Preencha com suas credenciais:
+     - API_ID e API_HASH: Obtenha em https://my.telegram.org/apps
+     - BOT_TOKEN: Obtenha através do @BotFather no Telegram
+     - SUPABASE_URL e SUPABASE_KEY: Obtenha no seu projeto Supabase
 4. Execute o bot:
    ```
    python bot_telegram.py
@@ -31,4 +36,10 @@ Um bot para Telegram com dashboard para monitoramento e controle.
 Para iniciar o dashboard:
 ```
 python dashboard.py
-``` 
+```
+
+## Segurança
+
+- Nunca compartilhe seu arquivo `.env` ou credenciais
+- Não comite arquivos de ambiente (.env) no Git
+- O arquivo `.gitignore` está configurado para excluir arquivos sensíveis 
