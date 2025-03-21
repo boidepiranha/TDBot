@@ -5,3 +5,5 @@ pandas==2.0.3
 plotly==5.15.0
 python-dotenv==1.0.1
 pytz==2025.1 
+flask
+requests
