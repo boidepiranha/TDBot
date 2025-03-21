@@ -1,3 +1,4 @@
+from flask import Flask
 from telethon.sync import TelegramClient, events
 import re
 from supabase import create_client, Client
@@ -14,6 +15,18 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # 🔹 Inicializa os clientes do Telegram e do Supabase
 client = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN)
+
+# Criando um servidor Flask
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "✅ Bot do Telegram rodando no Render!"
+
+def start_bot():
+    print("🤖 Bot está rodando no Render!")
+    client.run_until_disconnected()  # Mantém o bot ativo
+
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # 🔹 Função para processar a mensagem encaminhada
@@ -100,6 +113,9 @@ async def capturar_mensagem(event):
         if dados:
             enviar_para_supabase(dados)
 
-# 🔹 Iniciar o bot
-print("🤖 Bot está rodando... Aguardando mensagens encaminhadas.")
-client.run_until_disconnected()
+# Executando Flask e o Bot
+if __name__ == "__main__":
+    import threading
+    bot_thread = threading.Thread(target=start_bot)
+    bot_thread.start()
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))  # Define a porta para Render
