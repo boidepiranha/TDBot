@@ -5,6 +5,7 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 import os
 import asyncio
+from datetime import datetimes
 
 load_dotenv("bot_telegram.env")
 
@@ -17,6 +18,8 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 # 🔹 Inicializa os clientes do Telegram e do Supabase
 client = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN)
 
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 # Criando um servidor Flask
 app = Flask(__name__)
 
@@ -26,18 +29,10 @@ def home():
 
 async def start_bot():
     print("🤖 Bot está rodando no Render!")
-    await client.run_until_disconnected()  # Mantém o bot ativo
-
-# Executando o bot antes do Flask
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-loop.run_until_complete(start_bot())
-
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    await client.start(bot_token=BOT_TOKEN)
+    await client.run_until_disconnected()
 
 # 🔹 Função para processar a mensagem encaminhada
-from datetime import datetime
-
 def processar_mensagem(mensagem):
     padrao_data = r"📆 (\d{2}/\d{2}/\d{4}) (\d{2}:\d{2})"
     padrao_dados = r"(\d{4})\s+([\d.,]+)%\s+([\d.,]+)"
@@ -105,8 +100,6 @@ def enviar_para_supabase(dados):
     else:
         print(f"⚠️ Atualização {data_atualizacao} já existe no banco. Ignorando duplicata.")
 
-
-
 # 🔹 Capturar mensagens encaminhadas para o bot
 @client.on(events.NewMessage)
 async def capturar_mensagem(event):
@@ -119,6 +112,20 @@ async def capturar_mensagem(event):
         if dados:
             enviar_para_supabase(dados)
 
-# Iniciando o servidor Flask
+
+
+
+# Criando e gerenciando o loop de eventos
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))
+    loop = asyncio.get_event_loop()
+    loop.create_task(start_bot())  # Inicia o bot como uma tarefa assíncrona
+
+    # Rodando o Flask no mesmo loop
+    from threading import Thread
+    def run_flask():
+        app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))
+
+    flask_thread = Thread(target=run_flask)
+    flask_thread.start()
+
+    loop.run_forever()
