@@ -5,7 +5,7 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 import os
 import asyncio
-from datetime import datetimes
+from datetime import datetime
 
 load_dotenv("bot_telegram.env")
 
