@@ -28,6 +28,11 @@ async def start_bot():
     print("🤖 Bot está rodando no Render!")
     await client.run_until_disconnected()  # Mantém o bot ativo
 
+# Executando o bot antes do Flask
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+loop.run_until_complete(start_bot())
+
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # 🔹 Função para processar a mensagem encaminhada
@@ -114,10 +119,6 @@ async def capturar_mensagem(event):
         if dados:
             enviar_para_supabase(dados)
 
+# Iniciando o servidor Flask
 if __name__ == "__main__":
-    # Iniciar o bot no loop principal
-    loop = asyncio.get_event_loop()
-    loop.create_task(start_bot())  # Executa o bot no loop assíncrono
-
-    # Rodar o servidor Flask
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))
