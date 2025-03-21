@@ -4,6 +4,7 @@ import re
 from supabase import create_client, Client
 from dotenv import load_dotenv
 import os
+import asyncio
 
 load_dotenv("bot_telegram.env")
 
@@ -23,9 +24,9 @@ app = Flask(__name__)
 def home():
     return "✅ Bot do Telegram rodando no Render!"
 
-def start_bot():
+async def start_bot():
     print("🤖 Bot está rodando no Render!")
-    client.run_until_disconnected()  # Mantém o bot ativo
+    await client.run_until_disconnected()  # Mantém o bot ativo
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -113,9 +114,10 @@ async def capturar_mensagem(event):
         if dados:
             enviar_para_supabase(dados)
 
-# Executando Flask e o Bot
 if __name__ == "__main__":
-    import threading
-    bot_thread = threading.Thread(target=start_bot)
-    bot_thread.start()
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))  # Define a porta para Render
+    # Iniciar o bot no loop principal
+    loop = asyncio.get_event_loop()
+    loop.create_task(start_bot())  # Executa o bot no loop assíncrono
+
+    # Rodar o servidor Flask
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))
